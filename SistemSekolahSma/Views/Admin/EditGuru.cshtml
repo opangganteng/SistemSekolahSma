@@ -1,0 +1,118 @@
+﻿@model SistemSekolahSMA.Models.Guru
+@{
+    ViewData["Title"] = "Edit Guru";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-user-edit"></i> Edit Data Guru</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditGuru" method="post">
+                        <input asp-for="GuruId" type="hidden" />
+                        <input asp-for="CreatedDate" type="hidden" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="UserId" class="form-label">User Account</label>
+                                    <select asp-for="UserId" class="form-select">
+                                        <option value="">-- Pilih User --</option>
+                                        @if (ViewBag.Users != null)
+                                        {
+                                            @foreach (var user in ViewBag.Users)
+                                            {
+                                                <option value="@user.Value">@user.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                    <span asp-validation-for="UserId" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="NIP" class="form-label">NIP</label>
+                                    <input asp-for="NIP" class="form-control" placeholder="Masukkan NIP" />
+                                    <span asp-validation-for="NIP" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="NamaGuru" class="form-label">Nama Guru</label>
+                                    <input asp-for="NamaGuru" class="form-control" placeholder="Masukkan nama lengkap guru" />
+                                    <span asp-validation-for="NamaGuru" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="TempatLahir" class="form-label">Tempat Lahir</label>
+                                    <input asp-for="TempatLahir" class="form-control" placeholder="Masukkan tempat lahir" />
+                                    <span asp-validation-for="TempatLahir" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="TanggalLahir" class="form-label">Tanggal Lahir</label>
+                                    <input asp-for="TanggalLahir" type="date" class="form-control" />
+                                    <span asp-validation-for="TanggalLahir" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="JenisKelamin" class="form-label">Jenis Kelamin</label>
+                                    <select asp-for="JenisKelamin" class="form-select">
+                                        <option value="">-- Pilih Jenis Kelamin --</option>
+                                        <option value="Laki-laki">Laki-laki</option>
+                                        <option value="Perempuan">Perempuan</option>
+                                    </select>
+                                    <span asp-validation-for="JenisKelamin" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Alamat" class="form-label">Alamat</label>
+                                    <textarea asp-for="Alamat" class="form-control" rows="3" placeholder="Masukkan alamat lengkap"></textarea>
+                                    <span asp-validation-for="Alamat" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="NoTelepon" class="form-label">No. Telepon</label>
+                                    <input asp-for="NoTelepon" class="form-control" placeholder="Masukkan nomor telepon" />
+                                    <span asp-validation-for="NoTelepon" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input asp-for="IsActive" class="form-check-input" />
+                                        <label asp-for="IsActive" class="form-check-label">
+                                            Guru Aktif
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <hr>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Update
+                                </button>
+                                <a asp-action="MasterGuru" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Kembali
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

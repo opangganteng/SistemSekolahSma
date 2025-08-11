@@ -1,0 +1,397 @@
+﻿@model SistemSekolahSMA.ViewModels.PresensiSiswaViewModel
+@{
+    ViewData["Title"] = "Presensi Siswa";
+    var currentDate = Model.TanggalPresensi.ToString("dddd, dd MMMM yyyy");
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h4 class="mb-1">
+                                <i class="fas fa-clipboard-check"></i> Presensi Siswa
+                            </h4>
+                            <div class="d-flex gap-3 flex-wrap">
+                                <span><i class="fas fa-calendar"></i> <strong>@currentDate</strong></span>
+                                <span><i class="fas fa-chalkboard-teacher"></i> <strong>@Model.NamaKelas</strong></span>
+                                <span><i class="fas fa-book"></i> <strong>@Model.NamaMapel</strong></span>
+                                <span><i class="fas fa-user-tie"></i> <strong>@Model.NamaGuru</strong></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="bg-white text-primary px-3 py-2 rounded">
+                                <strong>Total Siswa: @Model.DaftarSiswa.Count</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    @if (Model.DaftarSiswa?.Any() == true)
+                    {
+                        <form asp-action="SimpanPresensiSiswa" method="post" id="presensiForm">
+                            <input type="hidden" asp-for="JadwalId" />
+                            <input type="hidden" asp-for="TanggalPresensi" />
+                            <input type="hidden" asp-for="NamaKelas" />
+                            <input type="hidden" asp-for="NamaMapel" />
+                            <input type="hidden" asp-for="NamaGuru" />
+
+                            <!-- Bulk Actions & Summary -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-outline-success btn-sm" onclick="checkAllHadir()">
+                                            <i class="fas fa-check-circle"></i> Semua Hadir
+                                        </button>
+                                        <button type="button" class="btn btn-outline-warning btn-sm" onclick="checkAllSakit()">
+                                            <i class="fas fa-thermometer-half"></i> Semua Sakit
+                                        </button>
+                                        <button type="button" class="btn btn-outline-info btn-sm" onclick="checkAllIzin()">
+                                            <i class="fas fa-clipboard-list"></i> Semua Izin
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="checkAllAlpha()">
+                                            <i class="fas fa-times-circle"></i> Semua Alpha
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearAll()">
+                                            <i class="fas fa-eraser"></i> Clear All
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <div id="presensiSummary" class="small">
+                                        <strong>Ringkasan:</strong>
+                                        <span class="badge bg-success">Hadir: <span id="hadirCount">0</span></span>
+                                        <span class="badge bg-warning">Sakit: <span id="sakitCount">0</span></span>
+                                        <span class="badge bg-info">Izin: <span id="izinCount">0</span></span>
+                                        <span class="badge bg-danger">Alpha: <span id="alphaCount">0</span></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tabel Presensi dengan Checkbox -->
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th style="width: 5%">No</th>
+                                            <th style="width: 15%">NPM/NISN</th>
+                                            <th style="width: 25%">Nama Siswa</th>
+                                            <th style="width: 10%" class="text-center">
+                                                <span class="text-success">✓ Hadir</span>
+                                            </th>
+                                            <th style="width: 10%" class="text-center">
+                                                <span class="text-warning">🏥 Sakit</span>
+                                            </th>
+                                            <th style="width: 10%" class="text-center">
+                                                <span class="text-info">📝 Izin</span>
+                                            </th>
+                                            <th style="width: 10%" class="text-center">
+                                                <span class="text-danger">❌ Alpha</span>
+                                            </th>
+                                            <th style="width: 15%">Keterangan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.DaftarSiswa.Count; i++)
+                                        {
+                                            <tr id="row-@i">
+                                                <td class="text-center align-middle">
+                                                    <span class="badge bg-secondary">@(i + 1)</span>
+                                                </td>
+                                                <td class="align-middle">
+                                                    <span class="badge bg-primary">@Model.DaftarSiswa[i].NISN</span>
+                                                    <input type="hidden" asp-for="DaftarSiswa[i].SiswaId" />
+                                                    <input type="hidden" asp-for="DaftarSiswa[i].NamaSiswa" />
+                                                    <input type="hidden" asp-for="DaftarSiswa[i].NISN" />
+                                                </td>
+                                                <td class="align-middle">
+                                                    <strong>@Model.DaftarSiswa[i].NamaSiswa</strong>
+                                                </td>
+
+                                                <!-- Checkbox Hadir -->
+                                                <td class="text-center align-middle bg-light-success">
+                                                    <input type="checkbox"
+                                                           class="form-check-input hadir-checkbox"
+                                                           id="hadir-@i"
+                                                           data-siswa="@i"
+                                                           onchange="updateStatus(@i, 'Hadir', this.checked)"
+                                                           checked="@(Model.DaftarSiswa[i].StatusKehadiran == "Hadir")">
+                                                </td>
+
+                                                <!-- Checkbox Sakit -->
+                                                <td class="text-center align-middle bg-light-warning">
+                                                    <input type="checkbox"
+                                                           class="form-check-input sakit-checkbox"
+                                                           id="sakit-@i"
+                                                           data-siswa="@i"
+                                                           onchange="updateStatus(@i, 'Sakit', this.checked)"
+                                                           checked="@(Model.DaftarSiswa[i].StatusKehadiran == "Sakit")">
+                                                </td>
+
+                                                <!-- Checkbox Izin -->
+                                                <td class="text-center align-middle bg-light-info">
+                                                    <input type="checkbox"
+                                                           class="form-check-input izin-checkbox"
+                                                           id="izin-@i"
+                                                           data-siswa="@i"
+                                                           onchange="updateStatus(@i, 'Izin', this.checked)"
+                                                           checked="@(Model.DaftarSiswa[i].StatusKehadiran == "Izin")">
+                                                </td>
+
+                                                <!-- Checkbox Alpha -->
+                                                <td class="text-center align-middle bg-light-danger">
+                                                    <input type="checkbox"
+                                                           class="form-check-input alpha-checkbox"
+                                                           id="alpha-@i"
+                                                           data-siswa="@i"
+                                                           onchange="updateStatus(@i, 'Alpha', this.checked)"
+                                                           checked="@(Model.DaftarSiswa[i].StatusKehadiran == "Alpha")">
+                                                </td>
+
+                                                <!-- Keterangan -->
+                                                <td class="align-middle">
+                                                    <input asp-for="DaftarSiswa[i].Keterangan"
+                                                           class="form-control form-control-sm"
+                                                           placeholder="Keterangan..."
+                                                           maxlength="255" />
+                                                    <!-- Hidden field untuk status -->
+                                                    <input type="hidden" asp-for="DaftarSiswa[i].StatusKehadiran" id="status-@i" />
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="row mt-4">
+                                <div class="col-md-8">
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle"></i>
+                                        <strong>Tips:</strong>
+                                        • Klik checkbox untuk menandai status siswa<br>
+                                        • Gunakan checkbox di header untuk menandai semua siswa sekaligus<br>
+                                        • Satu siswa hanya bisa punya satu status
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
+                                        <i class="fas fa-save"></i> Simpan Presensi
+                                    </button>
+                                    <a asp-action="Index" class="btn btn-secondary btn-lg">
+                                        <i class="fas fa-arrow-left"></i> Kembali
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning text-center">
+                            <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                            <h5>Tidak Ada Data Siswa</h5>
+                            <p>Tidak ada siswa yang ditemukan untuk kelas ini.</p>
+                            <a asp-action="Index" class="btn btn-primary">
+                                <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateSummary();
+            // Set default status untuk yang belum ada
+            for (let i = 0; i < @Model.DaftarSiswa.Count; i++) {
+                const statusField = document.getElementById(`status-${i}`);
+                if (!statusField.value) {
+                    statusField.value = 'Hadir';
+                    document.getElementById(`hadir-${i}`).checked = true;
+                }
+            }
+        });
+
+        // Update status siswa individual
+        function updateStatus(siswaIndex, status, isChecked) {
+            const statusField = document.getElementById(`status-${siswaIndex}`);
+
+            if (isChecked) {
+                // Uncheck semua checkbox lain untuk siswa ini
+                ['hadir', 'sakit', 'izin', 'alpha'].forEach(s => {
+                    if (s !== status.toLowerCase()) {
+                        const otherCheckbox = document.getElementById(`${s}-${siswaIndex}`);
+                        if (otherCheckbox) {
+                            otherCheckbox.checked = false;
+                        }
+                    }
+                });
+                statusField.value = status;
+                console.log(`Siswa ${siswaIndex} set to ${status}`); // Debug log
+            } else {
+                // Jika uncheck, set ke default 'Hadir'
+                statusField.value = 'Hadir';
+                document.getElementById(`hadir-${siswaIndex}`).checked = true;
+                console.log(`Siswa ${siswaIndex} set to default Hadir`); // Debug log
+            }
+
+            updateSummary();
+            updateRowColor(siswaIndex);
+        }
+
+        // Bulk actions
+        function checkAllHadir() {
+            for (let i = 0; i < @Model.DaftarSiswa.Count; i++) {
+                document.getElementById(`hadir-${i}`).checked = true;
+                updateStatus(i, 'Hadir', true);
+            }
+        }
+
+        function checkAllSakit() {
+            for (let i = 0; i < @Model.DaftarSiswa.Count; i++) {
+                document.getElementById(`sakit-${i}`).checked = true;
+                updateStatus(i, 'Sakit', true);
+            }
+        }
+
+        function checkAllIzin() {
+            for (let i = 0; i < @Model.DaftarSiswa.Count; i++) {
+                document.getElementById(`izin-${i}`).checked = true;
+                updateStatus(i, 'Izin', true);
+            }
+        }
+
+        function checkAllAlpha() {
+            for (let i = 0; i < @Model.DaftarSiswa.Count; i++) {
+                document.getElementById(`alpha-${i}`).checked = true;
+                updateStatus(i, 'Alpha', true);
+            }
+        }
+
+        function clearAll() {
+            for (let i = 0; i < @Model.DaftarSiswa.Count; i++) {
+                ['hadir', 'sakit', 'izin', 'alpha'].forEach(status => {
+                    document.getElementById(`${status}-${i}`).checked = false;
+                });
+                document.getElementById(`status-${i}`).value = '';
+                updateRowColor(i);
+            }
+            updateSummary();
+        }
+
+        // Toggle all functions - sudah tidak diperlukan karena tidak ada checkbox di header
+        // function toggleAllHadir() {
+        //     if (document.getElementById('checkAllHadirBox').checked) checkAllHadir();
+        // }
+
+        // Update summary counter
+        function updateSummary() {
+            let hadirCount = 0, sakitCount = 0, izinCount = 0, alphaCount = 0;
+
+            for (let i = 0; i < @Model.DaftarSiswa.Count; i++) {
+                const status = document.getElementById(`status-${i}`).value;
+                switch(status) {
+                    case 'Hadir': hadirCount++; break;
+                    case 'Sakit': sakitCount++; break;
+                    case 'Izin': izinCount++; break;
+                    case 'Alpha': alphaCount++; break;
+                }
+            }
+
+            document.getElementById('hadirCount').textContent = hadirCount;
+            document.getElementById('sakitCount').textContent = sakitCount;
+            document.getElementById('izinCount').textContent = izinCount;
+            document.getElementById('alphaCount').textContent = alphaCount;
+        }
+
+        // Update row color based on status
+        function updateRowColor(rowIndex) {
+            const row = document.getElementById(`row-${rowIndex}`);
+            const status = document.getElementById(`status-${rowIndex}`).value;
+
+            // Remove all status classes
+            row.classList.remove('table-success', 'table-warning', 'table-info', 'table-danger');
+
+            // Add appropriate class
+            switch(status) {
+                case 'Hadir': row.classList.add('table-success'); break;
+                case 'Sakit': row.classList.add('table-warning'); break;
+                case 'Izin': row.classList.add('table-info'); break;
+                case 'Alpha': row.classList.add('table-danger'); break;
+            }
+        }
+
+        // Form validation dengan debug
+        document.getElementById('presensiForm').addEventListener('submit', function(e) {
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Debug: Log semua data yang akan dikirim
+            console.log('=== FORM SUBMISSION DEBUG ===');
+            for (let i = 0; i < @Model.DaftarSiswa.Count; i++) {
+                const siswaId = document.querySelector(`input[name="DaftarSiswa[${i}].SiswaId"]`).value;
+                const namaSiswa = document.querySelector(`input[name="DaftarSiswa[${i}].NamaSiswa"]`).value;
+                const status = document.getElementById(`status-${i}`).value;
+                const keterangan = document.querySelector(`input[name="DaftarSiswa[${i}].Keterangan"]`).value;
+
+                console.log(`Siswa ${i}: ID=${siswaId}, Nama=${namaSiswa}, Status=${status}, Keterangan=${keterangan}`);
+            }
+
+            // Cek apakah ada siswa yang belum dipilih statusnya
+            let hasEmptyStatus = false;
+            for (let i = 0; i < @Model.DaftarSiswa.Count; i++) {
+                const status = document.getElementById(`status-${i}`).value;
+                if (!status || status === '') {
+                    console.warn(`Siswa index ${i} belum memiliki status!`);
+                    hasEmptyStatus = true;
+                }
+            }
+
+            if (hasEmptyStatus) {
+                alert('Semua siswa harus memiliki status kehadiran!');
+                e.preventDefault();
+                return false;
+            }
+
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+            submitBtn.disabled = true;
+
+            console.log('Form submitted successfully');
+        });
+    </script>
+
+    <style>
+        .bg-light-success {
+            background-color: #d1edcc !important;
+        }
+
+        .bg-light-warning {
+            background-color: #fff3cd !important;
+        }
+
+        .bg-light-info {
+            background-color: #d1ecf1 !important;
+        }
+
+        .bg-light-danger {
+            background-color: #f8d7da !important;
+        }
+
+        .form-check-input {
+            width: 1.2em;
+            height: 1.2em;
+            margin: 0 auto;
+        }
+
+        .table th {
+            text-align: center;
+        }
+    </style>
+}

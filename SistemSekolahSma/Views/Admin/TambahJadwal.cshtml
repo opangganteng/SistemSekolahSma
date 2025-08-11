@@ -1,0 +1,176 @@
+﻿@model SistemSekolahSMA.Models.Jadwal
+@{
+    ViewData["Title"] = "Tambah Jadwal";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-calendar-alt"></i> Tambah Jadwal Pelajaran Baru</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="TambahJadwal" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label asp-for="KelasId" class="form-label">Kelas</label>
+                                    <select asp-for="KelasId" class="form-select">
+                                        <option value="">-- Pilih Kelas --</option>
+                                        @if (ViewBag.Kelas != null)
+                                        {
+                                            @foreach (var kelas in ViewBag.Kelas)
+                                            {
+                                                <option value="@kelas.Value">@kelas.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                    <span asp-validation-for="KelasId" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="MataPelajaranId" class="form-label">Mata Pelajaran</label>
+                                    <select asp-for="MataPelajaranId" class="form-select">
+                                        <option value="">-- Pilih Mata Pelajaran --</option>
+                                        @if (ViewBag.MataPelajaran != null)
+                                        {
+                                            @foreach (var mapel in ViewBag.MataPelajaran)
+                                            {
+                                                <option value="@mapel.Value">@mapel.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                    <span asp-validation-for="MataPelajaranId" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="GuruId" class="form-label">Guru</label>
+                                    <select asp-for="GuruId" class="form-select">
+                                        <option value="">-- Pilih Guru --</option>
+                                        @if (ViewBag.Gurus != null)
+                                        {
+                                            @foreach (var guru in ViewBag.Gurus)
+                                            {
+                                                <option value="@guru.Value">@guru.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                    <span asp-validation-for="GuruId" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label asp-for="Hari" class="form-label">Hari</label>
+                                    <select asp-for="Hari" class="form-select">
+                                        <option value="">-- Pilih Hari --</option>
+                                        <option value="Senin">Senin</option>
+                                        <option value="Selasa">Selasa</option>
+                                        <option value="Rabu">Rabu</option>
+                                        <option value="Kamis">Kamis</option>
+                                        <option value="Jumat">Jumat</option>
+                                        <option value="Sabtu">Sabtu</option>
+                                    </select>
+                                    <span asp-validation-for="Hari" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="JamMulai" class="form-label">Jam Mulai</label>
+                                    <input asp-for="JamMulai" type="time" class="form-control" />
+                                    <span asp-validation-for="JamMulai" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="JamSelesai" class="form-label">Jam Selesai</label>
+                                    <input asp-for="JamSelesai" type="time" class="form-control" />
+                                    <span asp-validation-for="JamSelesai" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label asp-for="Ruangan" class="form-label">Ruangan</label>
+                                    <input asp-for="Ruangan" class="form-control" placeholder="Contoh: R.101, Lab.Fisika" />
+                                    <span asp-validation-for="Ruangan" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="TahunAjaran" class="form-label">Tahun Ajaran</label>
+                                    <select asp-for="TahunAjaran" class="form-select">
+                                        <option value="">-- Pilih Tahun Ajaran --</option>
+                                        <option value="2023/2024">2023/2024</option>
+                                        <option value="2024/2025" selected>2024/2025</option>
+                                        <option value="2025/2026">2025/2026</option>
+                                    </select>
+                                    <span asp-validation-for="TahunAjaran" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Semester" class="form-label">Semester</label>
+                                    <select asp-for="Semester" class="form-select">
+                                        <option value="">-- Pilih Semester --</option>
+                                        <option value="1">1 (Ganjil)</option>
+                                        <option value="2">2 (Genap)</option>
+                                    </select>
+                                    <span asp-validation-for="Semester" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input asp-for="IsActive" class="form-check-input" checked />
+                                        <label asp-for="IsActive" class="form-check-label">
+                                            Jadwal Aktif
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <strong>Peringatan:</strong><br>
+                                    • Pastikan tidak ada jadwal bentrok di hari dan jam yang sama<br>
+                                    • Periksa ketersediaan guru di waktu tersebut<br>
+                                    • Jam selesai harus lebih besar dari jam mulai
+                                </div>
+
+                                <hr>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Simpan
+                                </button>
+                                <a asp-action="MasterJadwal" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Kembali
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Validasi jam mulai dan selesai
+        document.getElementById('JamSelesai').addEventListener('change', function() {
+            var jamMulai = document.getElementById('JamMulai').value;
+            var jamSelesai = this.value;
+
+            if (jamMulai && jamSelesai) {
+                if (jamSelesai <= jamMulai) {
+                    alert('Jam selesai harus lebih besar dari jam mulai!');
+                    this.value = '';
+                }
+            }
+        });
+    </script>
+}

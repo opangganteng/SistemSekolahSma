@@ -1,0 +1,99 @@
+﻿@model SistemSekolahSMA.Models.MataPelajaran
+@{
+    ViewData["Title"] = "Edit Mata Pelajaran";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-book"></i> Edit Mata Pelajaran</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditMataPelajaran" method="post">
+                        <input asp-for="MataPelajaranId" type="hidden" />
+                        <input asp-for="CreatedDate" type="hidden" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="KodeMapel" class="form-label">Kode Mata Pelajaran</label>
+                                    <input asp-for="KodeMapel" class="form-control" placeholder="Contoh: MAT, FIS, KIM" maxlength="10" style="text-transform: uppercase;" />
+                                    <span asp-validation-for="KodeMapel" class="text-danger"></span>
+                                    <small class="text-muted">Maksimal 10 karakter, akan otomatis uppercase</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="NamaMapel" class="form-label">Nama Mata Pelajaran</label>
+                                    <input asp-for="NamaMapel" class="form-control" placeholder="Contoh: Matematika, Fisika, Kimia" />
+                                    <span asp-validation-for="NamaMapel" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Kategori" class="form-label">Kategori</label>
+                                    <select asp-for="Kategori" class="form-select">
+                                        <option value="">-- Pilih Kategori --</option>
+                                        <option value="Eksak">Eksak</option>
+                                        <option value="Bahasa">Bahasa</option>
+                                        <option value="Sosial">Sosial</option>
+                                        <option value="Olahraga">Olahraga</option>
+                                        <option value="Seni">Seni</option>
+                                        <option value="Agama">Agama</option>
+                                        <option value="Keterampilan">Keterampilan</option>
+                                    </select>
+                                    <span asp-validation-for="Kategori" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input asp-for="IsActive" class="form-check-input" />
+                                        <label asp-for="IsActive" class="form-check-label">
+                                            Mata Pelajaran Aktif
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    <strong>Panduan:</strong><br>
+                                    • Kode mata pelajaran harus unik dan singkat<br>
+                                    • Gunakan 3-4 huruf untuk kode (MAT, FIS, BIO)<br>
+                                    • Pilih kategori yang sesuai untuk pengelompokan
+                                </div>
+
+                                <hr>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Update
+                                </button>
+                                <a asp-action="MasterMataPelajaran" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Kembali
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Auto uppercase untuk kode mapel
+        document.getElementById('KodeMapel').addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+    </script>
+}

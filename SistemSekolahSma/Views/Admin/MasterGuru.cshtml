@@ -1,0 +1,109 @@
+﻿@model IEnumerable<SistemSekolahSMA.Models.Guru>
+@{
+    ViewData["Title"] = "Master Guru";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4><i class="fas fa-chalkboard-teacher"></i> Master Guru</h4>
+                    <a asp-action="TambahGuru" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Tambah Guru
+                    </a>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>No</th>
+                                    <th>NIP</th>
+                                    <th>Nama Guru</th>
+                                    <th>Tempat, Tanggal Lahir</th>
+                                    <th>Jenis Kelamin</th>
+                                    <th>No. Telepon</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    int no = 1;
+                                    foreach (var guru in Model)
+                                    {
+                                        <tr>
+                                            <td>@no</td>
+                                            <td>@guru.NIP</td>
+                                            <td>@guru.NamaGuru</td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(guru.TempatLahir) && guru.TanggalLahir.HasValue)
+                                                {
+                                                    @($"{guru.TempatLahir}, {guru.TanggalLahir.Value:dd/MM/yyyy}")
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td>@(guru.JenisKelamin ?? "-")</td>
+                                            <td>@(guru.NoTelepon ?? "-")</td>
+                                            <td>
+                                                @if (guru.IsActive)
+                                                {
+                                                    <span class="badge bg-success">Aktif</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">Tidak Aktif</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <a asp-action="EditGuru" asp-route-id="@guru.GuruId" class="btn btn-sm btn-warning">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </a>
+                                                <form asp-action="HapusGuru" asp-route-id="@guru.GuruId" method="post" class="d-inline"
+                                                      onsubmit="return confirm('Apakah Anda yakin ingin menghapus guru @guru.NamaGuru?')">
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-trash"></i> Hapus
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        no++;
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="8" class="text-center text-muted">
+                                            <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                                            Belum ada data guru
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

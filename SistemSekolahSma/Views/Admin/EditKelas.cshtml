@@ -1,0 +1,109 @@
+﻿@model SistemSekolahSMA.Models.Kelas
+@{
+    ViewData["Title"] = "Edit Kelas";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-edit"></i> Edit Data Kelas</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditKelas" method="post">
+                        <input asp-for="KelasId" type="hidden" />
+                        <input asp-for="CreatedDate" type="hidden" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="NamaKelas" class="form-label">Nama Kelas</label>
+                                    <input asp-for="NamaKelas" class="form-control" placeholder="Contoh: X IPA 1" />
+                                    <span asp-validation-for="NamaKelas" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Tingkat" class="form-label">Tingkat</label>
+                                    <select asp-for="Tingkat" class="form-select">
+                                        <option value="">-- Pilih Tingkat --</option>
+                                        <option value="10">10 (Kelas X)</option>
+                                        <option value="11">11 (Kelas XI)</option>
+                                        <option value="12">12 (Kelas XII)</option>
+                                    </select>
+                                    <span asp-validation-for="Tingkat" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Jurusan" class="form-label">Jurusan</label>
+                                    <select asp-for="Jurusan" class="form-select">
+                                        <option value="">-- Pilih Jurusan --</option>
+                                        <option value="IPA">IPA (Ilmu Pengetahuan Alam)</option>
+                                        <option value="IPS">IPS (Ilmu Pengetahuan Sosial)</option>
+                                        <option value="Bahasa">Bahasa</option>
+                                    </select>
+                                    <span asp-validation-for="Jurusan" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="WaliKelas" class="form-label">Wali Kelas</label>
+                                    <select asp-for="WaliKelas" class="form-select">
+                                        <option value="">-- Pilih Wali Kelas --</option>
+                                        @if (ViewBag.Gurus != null)
+                                        {
+                                            @foreach (var guru in ViewBag.Gurus)
+                                            {
+                                                <option value="@guru.Value">@guru.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                    <span asp-validation-for="WaliKelas" class="text-danger"></span>
+                                    <small class="text-muted">Opsional - bisa diisi nanti</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input asp-for="IsActive" class="form-check-input" />
+                                        <label asp-for="IsActive" class="form-check-label">
+                                            Kelas Aktif
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    <strong>Tips:</strong><br>
+                                    • Nama kelas harus unik<br>
+                                    • Format: [Tingkat] [Jurusan] [Nomor]<br>
+                                    • Contoh: X IPA 1, XI IPS 2
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <hr>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Update
+                                </button>
+                                <a asp-action="MasterKelas" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Kembali
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

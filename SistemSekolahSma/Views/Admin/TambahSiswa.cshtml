@@ -1,0 +1,122 @@
+﻿@model SistemSekolahSMA.Models.Siswa
+@{
+    ViewData["Title"] = "Tambah Siswa";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-user-plus"></i> Tambah Siswa Baru</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="TambahSiswa" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="NISN" class="form-label">NISN *</label>
+                                    <input asp-for="NISN" class="form-control" placeholder="Masukkan NISN" />
+                                    <span asp-validation-for="NISN" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="NamaSiswa" class="form-label">Nama Siswa *</label>
+                                    <input asp-for="NamaSiswa" class="form-control" placeholder="Masukkan nama lengkap siswa" />
+                                    <span asp-validation-for="NamaSiswa" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="KelasId" class="form-label">Kelas *</label>
+                                    <select asp-for="KelasId" asp-items="ViewBag.Kelas" class="form-select">
+                                        <option value="">-- Pilih Kelas --</option>
+                                    </select>
+                                    <span asp-validation-for="KelasId" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="TempatLahir" class="form-label">Tempat Lahir</label>
+                                    <input asp-for="TempatLahir" class="form-control" placeholder="Masukkan tempat lahir" />
+                                    <span asp-validation-for="TempatLahir" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="TanggalLahir" class="form-label">Tanggal Lahir</label>
+                                    <input asp-for="TanggalLahir" type="date" class="form-control" />
+                                    <span asp-validation-for="TanggalLahir" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="JenisKelamin" class="form-label">Jenis Kelamin</label>
+                                    <select asp-for="JenisKelamin" class="form-select">
+                                        <option value="">-- Pilih Jenis Kelamin --</option>
+                                        <option value="Laki-laki">Laki-laki</option>
+                                        <option value="Perempuan">Perempuan</option>
+                                    </select>
+                                    <span asp-validation-for="JenisKelamin" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Alamat" class="form-label">Alamat</label>
+                                    <textarea asp-for="Alamat" class="form-control" rows="3" placeholder="Masukkan alamat lengkap"></textarea>
+                                    <span asp-validation-for="Alamat" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="NoTelepon" class="form-label">No. Telepon Siswa</label>
+                                    <input asp-for="NoTelepon" class="form-control" placeholder="Masukkan nomor telepon siswa" />
+                                    <span asp-validation-for="NoTelepon" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="NamaOrtu" class="form-label">Nama Orang Tua</label>
+                                    <input asp-for="NamaOrtu" class="form-control" placeholder="Masukkan nama orang tua/wali" />
+                                    <span asp-validation-for="NamaOrtu" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input asp-for="IsActive" class="form-check-input" checked />
+                                        <label asp-for="IsActive" class="form-check-label">
+                                            Siswa Aktif
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    <strong>Catatan:</strong><br>
+                                    • NISN harus unik<br>
+                                    • Pastikan memilih kelas yang benar<br>
+                                    • Field dengan tanda (*) wajib diisi
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <hr>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Simpan
+                                </button>
+                                <a asp-action="MasterSiswa" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Kembali
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,122 @@
+﻿@model IEnumerable<SistemSekolahSMA.Models.Siswa>
+@{
+    ViewData["Title"] = "Master Siswa";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4><i class="fas fa-users"></i> Master Siswa</h4>
+                    <a asp-action="TambahSiswa" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Tambah Siswa
+                    </a>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>No</th>
+                                    <th>NISN</th>
+                                    <th>Nama Siswa</th>
+                                    <th>Kelas</th>
+                                    <th>Tempat, Tanggal Lahir</th>
+                                    <th>Jenis Kelamin</th>
+                                    <th>No. Telepon</th>
+                                    <th>Nama Orang Tua</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    int no = 1;
+                                    foreach (var siswa in Model)
+                                    {
+                                        <tr>
+                                            <td>@no</td>
+                                            <td><span class="badge bg-primary">@siswa.NISN</span></td>
+                                            <td>@siswa.NamaSiswa</td>
+                                            <td>
+                                                @if (siswa.Kelas != null)
+                                                {
+                                                    <span class="badge bg-info">@siswa.Kelas.NamaKelas</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(siswa.TempatLahir) && siswa.TanggalLahir.HasValue)
+                                                {
+                                                    @($"{siswa.TempatLahir}, {siswa.TanggalLahir.Value:dd/MM/yyyy}")
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td>@(siswa.JenisKelamin ?? "-")</td>
+                                            <td>@(siswa.NoTelepon ?? "-")</td>
+                                            <td>@(siswa.NamaOrtu ?? "-")</td>
+                                            <td>
+                                                @if (siswa.IsActive)
+                                                {
+                                                    <span class="badge bg-success">Aktif</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">Tidak Aktif</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <a asp-action="EditSiswa" asp-route-id="@siswa.SiswaId" class="btn btn-sm btn-warning">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </a>
+                                                <form asp-action="HapusSiswa" asp-route-id="@siswa.SiswaId" method="post" class="d-inline"
+                                                      onsubmit="return confirm('Apakah Anda yakin ingin menghapus siswa @siswa.NamaSiswa?')">
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-trash"></i> Hapus
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        no++;
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="10" class="text-center text-muted">
+                                            <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                                            Belum ada data siswa
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

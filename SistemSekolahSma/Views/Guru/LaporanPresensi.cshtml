@@ -1,0 +1,264 @@
+﻿@{
+    ViewData["Title"] = "Laporan Presensi";
+    var currentMonth = ViewBag.Bulan ?? DateTime.Now.Month;
+    var currentYear = ViewBag.Tahun ?? DateTime.Now.Year;
+    var laporanSiswa = ViewBag.LaporanSiswa as IEnumerable<dynamic> ?? new List<dynamic>();
+    var laporanGuru = ViewBag.LaporanGuru as IEnumerable<dynamic> ?? new List<dynamic>();
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-chart-bar"></i> Laporan Presensi</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Filter Bulan/Tahun -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <form asp-action="LaporanPresensi" method="get" class="row g-3">
+                                <div class="col-md-5">
+                                    <label class="form-label">Bulan</label>
+                                    <select name="bulan" class="form-select">
+                                        <option value="1" selected="@(currentMonth == 1)">Januari</option>
+                                        <option value="2" selected="@(currentMonth == 2)">Februari</option>
+                                        <option value="3" selected="@(currentMonth == 3)">Maret</option>
+                                        <option value="4" selected="@(currentMonth == 4)">April</option>
+                                        <option value="5" selected="@(currentMonth == 5)">Mei</option>
+                                        <option value="6" selected="@(currentMonth == 6)">Juni</option>
+                                        <option value="7" selected="@(currentMonth == 7)">Juli</option>
+                                        <option value="8" selected="@(currentMonth == 8)">Agustus</option>
+                                        <option value="9" selected="@(currentMonth == 9)">September</option>
+                                        <option value="10" selected="@(currentMonth == 10)">Oktober</option>
+                                        <option value="11" selected="@(currentMonth == 11)">November</option>
+                                        <option value="12" selected="@(currentMonth == 12)">Desember</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Tahun</label>
+                                    <select name="tahun" class="form-select">
+                                        <option value="2024" selected="@(currentYear == 2024)">2024</option>
+                                        <option value="2025" selected="@(currentYear == 2025)">2025</option>
+                                        <option value="2026" selected="@(currentYear == 2026)">2026</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">&nbsp;</label>
+                                    <button type="submit" class="btn btn-primary d-block">
+                                        <i class="fas fa-search"></i> Filter
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="alert alert-info">
+                                <strong>📅 Periode:</strong>
+                                @{
+                                    var monthNames = new string[] {"", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                                                                "Juli", "Agustus", "September", "Oktober", "November", "Desember"};
+                                }
+                                @monthNames[currentMonth] @currentYear
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Navigation -->
+                    <ul class="nav nav-tabs" id="laporanTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="siswa-tab" data-bs-toggle="tab" data-bs-target="#siswa-pane" type="button" role="tab">
+                                👨‍🎓 Laporan Presensi Siswa
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="guru-tab" data-bs-toggle="tab" data-bs-target="#guru-pane" type="button" role="tab">
+                                👨‍🏫 Laporan Presensi Guru
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content" id="laporanTabsContent">
+                        <!-- Laporan Presensi Siswa -->
+                        <div class="tab-pane fade show active" id="siswa-pane" role="tabpanel">
+                            <div class="mt-3">
+                                @if (laporanSiswa.Any())
+                                {
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Nama Siswa</th>
+                                                    <th>Kelas</th>
+                                                    <th>Total Hadir</th>
+                                                    <th>Total Sakit</th>
+                                                    <th>Total Izin</th>
+                                                    <th>Total Alpha</th>
+                                                    <th>Persentase Kehadiran</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @{
+                                                    int siswaNo = 1;
+                                                }
+                                                @foreach (var siswa in laporanSiswa)
+                                                {
+                                                    try
+                                                    {
+                                                        // Safely access dynamic properties
+                                                        int totalHadir = siswa.TotalHadir ?? 0;
+                                                        int totalSakit = siswa.TotalSakit ?? 0;
+                                                        int totalIzin = siswa.TotalIzin ?? 0;
+                                                        int totalAlpha = siswa.TotalAlpha ?? 0;
+
+                                                        var totalPresensi = totalHadir + totalSakit + totalIzin + totalAlpha;
+                                                        var persentase = totalPresensi > 0 ? (totalHadir * 100.0 / totalPresensi) : 0;
+
+                                                        <tr>
+                                                            <td>@siswaNo</td>
+                                                            <td>@(siswa.NamaSiswa ?? "N/A")</td>
+                                                            <td><span class="badge bg-info">@(siswa.NamaKelas ?? "N/A")</span></td>
+                                                            <td><span class="badge bg-success">@totalHadir</span></td>
+                                                            <td><span class="badge bg-warning">@totalSakit</span></td>
+                                                            <td><span class="badge bg-primary">@totalIzin</span></td>
+                                                            <td><span class="badge bg-danger">@totalAlpha</span></td>
+                                                            <td>
+                                                                <div class="progress" style="height: 20px;">
+                                                                    <div class="progress-bar @(persentase >= 80 ? "bg-success" : persentase >= 60 ? "bg-warning" : "bg-danger")"
+                                                                         style="width: @(persentase)%">
+                                                                        @persentase.ToString("F1")%
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        siswaNo++;
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        <tr>
+                                                            <td colspan="8" class="text-danger">Error loading data: @ex.Message</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <form asp-action="KirimLaporan" method="post" class="d-inline">
+                                            <input type="hidden" name="bulan" value="@currentMonth" />
+                                            <input type="hidden" name="tahun" value="@currentYear" />
+                                            <input type="hidden" name="jenisLaporan" value="Siswa" />
+                                            <button type="submit" class="btn btn-success" onclick="return confirm('Kirim laporan presensi siswa ke admin?')">
+                                                <i class="fas fa-paper-plane"></i> Kirim Laporan Siswa ke Admin
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-info mt-3">
+                                        <i class="fas fa-info-circle"></i> Tidak ada data presensi siswa untuk periode ini.
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Laporan Presensi Guru -->
+                        <div class="tab-pane fade" id="guru-pane" role="tabpanel">
+                            <div class="mt-3">
+                                @if (laporanGuru.Any())
+                                {
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Nama Guru</th>
+                                                    <th>Mata Pelajaran</th>
+                                                    <th>Total Mengajar</th>
+                                                    <th>Total Hadir</th>
+                                                    <th>Total Tidak Hadir</th>
+                                                    <th>Persentase Kehadiran</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @{
+                                                    int guruNo = 1;
+                                                }
+                                                @foreach (var guru in laporanGuru)
+                                                {
+                                                    try
+                                                    {
+                                                        // Safely access dynamic properties
+                                                        int totalMengajar = guru.TotalMengajar ?? 0;
+                                                        int totalHadir = guru.TotalHadir ?? 0;
+                                                        int totalTidakHadir = guru.TotalTidakHadir ?? 0;
+
+                                                        var persentase = totalMengajar > 0 ? (totalHadir * 100.0 / totalMengajar) : 0;
+
+                                                        <tr>
+                                                            <td>@guruNo</td>
+                                                            <td>@(guru.NamaGuru ?? "N/A")</td>
+                                                            <td>@(guru.MataPelajaran ?? "N/A")</td>
+                                                            <td><span class="badge bg-secondary">@totalMengajar</span></td>
+                                                            <td><span class="badge bg-success">@totalHadir</span></td>
+                                                            <td><span class="badge bg-danger">@totalTidakHadir</span></td>
+                                                            <td>
+                                                                <div class="progress" style="height: 20px;">
+                                                                    <div class="progress-bar @(persentase >= 90 ? "bg-success" : persentase >= 75 ? "bg-warning" : "bg-danger")"
+                                                                         style="width: @(persentase)%">
+                                                                        @persentase.ToString("F1")%
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        guruNo++;
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        <tr>
+                                                            <td colspan="7" class="text-danger">Error loading data: @ex.Message</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <form asp-action="KirimLaporan" method="post" class="d-inline">
+                                            <input type="hidden" name="bulan" value="@currentMonth" />
+                                            <input type="hidden" name="tahun" value="@currentYear" />
+                                            <input type="hidden" name="jenisLaporan" value="Guru" />
+                                            <button type="submit" class="btn btn-info" onclick="return confirm('Kirim laporan presensi guru ke admin?')">
+                                                <i class="fas fa-paper-plane"></i> Kirim Laporan Guru ke Admin
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-info mt-3">
+                                        <i class="fas fa-info-circle"></i> Tidak ada data presensi guru untuk periode ini.
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-refresh setiap 5 menit untuk data real-time
+        setTimeout(function() {
+            location.reload();
+        }, 300000); // 5 menit
+    </script>
+}

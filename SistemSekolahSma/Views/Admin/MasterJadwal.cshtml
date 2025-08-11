@@ -1,0 +1,137 @@
+﻿@model IEnumerable<SistemSekolahSMA.Models.Jadwal>
+@{
+    ViewData["Title"] = "Master Jadwal";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4><i class="fas fa-calendar-alt"></i> Master Jadwal</h4>
+                    <a asp-action="TambahJadwal" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Tambah Jadwal
+                    </a>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Hari</th>
+                                    <th>Waktu</th>
+                                    <th>Kelas</th>
+                                    <th>Mata Pelajaran</th>
+                                    <th>Guru</th>
+                                    <th>Ruangan</th>
+                                    <th>Tahun Ajaran</th>
+                                    <th>Semester</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    int no = 1;
+                                    foreach (var jadwal in Model)
+                                    {
+                                        <tr>
+                                            <td>@no</td>
+                                            <td>
+                                                <span class="badge bg-info">@jadwal.Hari</span>
+                                            </td>
+                                            <td>
+                                                @jadwal.JamMulai.ToString(@"hh\:mm") - @jadwal.JamSelesai.ToString(@"hh\:mm")
+                                            </td>
+                                            <td>
+                                                @if (jadwal.Kelas != null)
+                                                {
+                                                    @jadwal.Kelas.NamaKelas
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (jadwal.MataPelajaran != null)
+                                                {
+                                                    @jadwal.MataPelajaran.NamaMapel
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (jadwal.Guru != null)
+                                                {
+                                                    @jadwal.Guru.NamaGuru
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td>@(jadwal.Ruangan ?? "-")</td>
+                                            <td>@jadwal.TahunAjaran</td>
+                                            <td>@jadwal.Semester</td>
+                                            <td>
+                                                @if (jadwal.IsActive)
+                                                {
+                                                    <span class="badge bg-success">Aktif</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">Tidak Aktif</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <a asp-action="EditJadwal" asp-route-id="@jadwal.JadwalId" class="btn btn-sm btn-warning">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </a>
+                                                <form asp-action="HapusJadwal" asp-route-id="@jadwal.JadwalId" method="post" class="d-inline"
+                                                      onsubmit="return confirm('Apakah Anda yakin ingin menghapus jadwal ini?')">
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-trash"></i> Hapus
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        no++;
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="11" class="text-center text-muted">
+                                            <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                                            Belum ada data jadwal
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

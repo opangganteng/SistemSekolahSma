@@ -1,0 +1,109 @@
+﻿@model IEnumerable<SistemSekolahSMA.Models.Kelas>
+@{
+    ViewData["Title"] = "Master Kelas";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4><i class="fas fa-school"></i> Master Kelas</h4>
+                    <a asp-action="TambahKelas" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Tambah Kelas
+                    </a>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Kelas</th>
+                                    <th>Tingkat</th>
+                                    <th>Jurusan</th>
+                                    <th>Wali Kelas</th>
+                                    <th>Status</th>
+                                    <th>Tanggal Dibuat</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    int no = 1;
+                                    foreach (var kelas in Model)
+                                    {
+                                        <tr>
+                                            <td>@no</td>
+                                            <td>@kelas.NamaKelas</td>
+                                            <td>@kelas.Tingkat</td>
+                                            <td>@(kelas.Jurusan ?? "-")</td>
+                                            <td>
+                                                @if (kelas.WaliKelasNavigation != null)
+                                                {
+                                                    @kelas.WaliKelasNavigation.NamaGuru
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">Belum ditentukan</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (kelas.IsActive)
+                                                {
+                                                    <span class="badge bg-success">Aktif</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">Tidak Aktif</span>
+                                                }
+                                            </td>
+                                            <td>@kelas.CreatedDate.ToString("dd/MM/yyyy")</td>
+                                            <td>
+                                                <a asp-action="EditKelas" asp-route-id="@kelas.KelasId" class="btn btn-sm btn-warning">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </a>
+                                                <form asp-action="HapusKelas" asp-route-id="@kelas.KelasId" method="post" class="d-inline"
+                                                      onsubmit="return confirm('Apakah Anda yakin ingin menghapus kelas @kelas.NamaKelas?')">
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-trash"></i> Hapus
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        no++;
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="8" class="text-center text-muted">
+                                            <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                                            Belum ada data kelas
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

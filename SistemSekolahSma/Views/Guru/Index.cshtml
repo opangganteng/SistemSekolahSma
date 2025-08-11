@@ -1,0 +1,422 @@
+﻿@model SistemSekolahSMA.ViewModels.DashboardGuruViewModel
+
+@{
+    ViewData["Title"] = "Dashboard Guru";
+}
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .page-header {
+        background: white;
+        border-bottom: 1px solid #e9ecef;
+        padding: 24px 0;
+        margin-bottom: 24px;
+    }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #212529;
+            margin: 0;
+        }
+
+        .page-header p {
+            color: #6c757d;
+            margin: 4px 0 0 0;
+            font-size: 16px;
+        }
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 32px;
+    }
+
+    .action-card {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 24px;
+        transition: all 0.15s ease-in-out;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+        .action-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: inherit;
+        }
+
+    .action-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        margin-bottom: 16px;
+        color: white;
+    }
+
+    .action-card:nth-child(1) .action-icon {
+        background-color: #10b981;
+    }
+
+    .action-card:nth-child(2) .action-icon {
+        background-color: #3b82f6;
+    }
+
+    .action-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 8px;
+    }
+
+    .action-description {
+        color: #6b7280;
+        font-size: 14px;
+        margin-bottom: 16px;
+    }
+
+    .action-button {
+        display: inline-block;
+        padding: 6px 12px;
+        background-color: #f3f4f6;
+        color: #374151;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.15s ease-in-out;
+    }
+
+        .action-button:hover {
+            background-color: #e5e7eb;
+            text-decoration: none;
+            color: #111827;
+        }
+
+    .main-section {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 24px;
+        margin-bottom: 24px;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .schedule-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 16px;
+    }
+
+    .schedule-card {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 16px;
+        transition: all 0.15s ease-in-out;
+    }
+
+        .schedule-card:hover {
+            background: #f1f3f4;
+            border-color: #d1d5db;
+        }
+
+    .schedule-day {
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .schedule-time {
+        color: #6b7280;
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+    .schedule-subject {
+        color: #111827;
+        font-weight: 500;
+        margin-bottom: 6px;
+        font-size: 14px;
+    }
+
+    .schedule-class {
+        background: #3b82f6;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-block;
+        margin-bottom: 8px;
+    }
+
+    .schedule-room {
+        color: #6b7280;
+        font-size: 13px;
+        margin-bottom: 12px;
+    }
+
+    .presensi-link {
+        background: #10b981;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.15s ease-in-out;
+    }
+
+        .presensi-link:hover {
+            background: #059669;
+            color: white;
+            text-decoration: none;
+        }
+
+    .quick-presensi-section {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 24px;
+        margin-bottom: 24px;
+        border-left: 4px solid #10b981;
+    }
+
+    .info-section {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 24px;
+    }
+
+        .info-section h5 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
+        }
+
+        .info-section ul {
+            margin: 12px 0;
+            padding-left: 20px;
+        }
+
+        .info-section li {
+            margin-bottom: 6px;
+            color: #374151;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .info-section p {
+            color: #374151;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .info-section strong {
+            color: #111827;
+        }
+
+    .stats-box {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 16px;
+        margin-top: 16px;
+    }
+
+        .stats-box p {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .stats-box small {
+            color: #6c757d;
+            font-size: 12px;
+        }
+
+    .alert {
+        padding: 12px 16px;
+        border-radius: 6px;
+        margin-bottom: 16px;
+        font-size: 14px;
+        border: 1px solid;
+    }
+
+    .alert-info {
+        background-color: #e0f2fe;
+        border-color: #0891b2;
+        color: #0e7490;
+    }
+
+    .media (max-width: 768px) {
+        .quick-actions
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    .schedule-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .page-header h1 {
+        font-size: 24px;
+    }
+
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="container">
+            <h1>Dashboard Guru</h1>
+            <p>Selamat datang, <strong>@Model.DataGuru?.NamaGuru</strong> (NIP: @Model.DataGuru?.NIP)</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a asp-action="PresensiGuru" class="action-card">
+                <div class="action-icon">✅</div>
+                <div class="action-title">Input Presensi Guru</div>
+                <div class="action-description">Catat kehadiran mengajar Anda</div>
+                <span class="action-button">Input Presensi</span>
+            </a>
+
+            <a asp-action="LaporanPresensi" class="action-card">
+                <div class="action-icon">📊</div>
+                <div class="action-title">Lihat Laporan Presensi</div>
+                <div class="action-description">Monitor laporan kehadiran</div>
+                <span class="action-button">Lihat Laporan</span>
+            </a>
+        </div>
+
+        <!-- Jadwal Mengajar Section -->
+        <div class="main-section">
+            <h5 class="section-title">📅 Jadwal Mengajar</h5>
+            @if (Model.JadwalMengajar?.Any() == true)
+            {
+                <div class="schedule-grid">
+                    @foreach (var jadwal in Model.JadwalMengajar)
+                    {
+                        <div class="schedule-card">
+                            <div class="schedule-day">@jadwal.Hari</div>
+                            <div class="schedule-time">@jadwal.JamMulai - @jadwal.JamSelesai</div>
+                            <div class="schedule-subject">@jadwal.NamaMapel</div>
+                            <div>
+                                <span class="schedule-class">@jadwal.NamaKelas</span>
+                            </div>
+                            <div class="schedule-room">Ruangan: @(jadwal.Ruangan ?? "-")</div>
+                            <a asp-action="PresensiSiswa" asp-route-jadwalId="@jadwal.JadwalId" class="presensi-link">
+                                Input Presensi Siswa
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    Tidak ada jadwal mengajar untuk ditampilkan.
+                </div>
+            }
+        </div>
+
+        <!-- Input Presensi Siswa Hari Ini -->
+        <div class="quick-presensi-section">
+            <h5 class="section-title">⚡ Input Presensi Siswa Hari Ini</h5>
+            @if (Model.JadwalMengajar?.Any() == true)
+            {
+                <p style="margin-bottom: 16px; color: #374151; font-size: 14px;">Pilih kelas untuk input presensi:</p>
+                <div class="schedule-grid">
+                    @foreach (var jadwal in Model.JadwalMengajar)
+                    {
+                        <div class="schedule-card" style="border-left: 4px solid #10b981;">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                                <div>
+                                    <div class="schedule-subject">@jadwal.NamaKelas</div>
+                                    <div class="schedule-time">@jadwal.NamaMapel</div>
+                                    <div class="schedule-room">@jadwal.JamMulai - @jadwal.JamSelesai</div>
+                                </div>
+                                <div style="font-size: 20px;">📝</div>
+                            </div>
+                            <a asp-action="PresensiSiswa" asp-route-jadwalId="@jadwal.JadwalId" class="presensi-link">
+                                Input Presensi
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info" style="margin-bottom: 0;">
+                    Tidak ada jadwal mengajar hari ini.
+                </div>
+            }
+        </div>
+
+        <!-- Information Section -->
+        <div class="info-section">
+            <div class="row">
+                <div class="col-md-8">
+                    <h5>Informasi</h5>
+                    <p><strong>Cara Menggunakan Dashboard:</strong></p>
+                    <ul>
+                        <li>Klik "Input Presensi Guru" untuk mencatat kehadiran mengajar</li>
+                        <li>Pilih kelas dari jadwal untuk input presensi siswa</li>
+                        <li>Gunakan "Lihat Laporan" untuk monitoring kehadiran</li>
+                        <li>Pastikan presensi diinput setiap selesai mengajar</li>
+                    </ul>
+
+                    <p><strong>Tips:</strong></p>
+                    <ul>
+                        <li>Input presensi segera setelah jam pelajaran</li>
+                        <li>Periksa kembali data sebelum menyimpan</li>
+                        <li>Gunakan keterangan untuk informasi tambahan</li>
+                    </ul>
+                </div>
+
+                <div class="col-md-4">
+                    <h5>Statistik Hari Ini</h5>
+                    <div class="stats-box">
+                        <p><strong>Tanggal:</strong> @DateTime.Now.ToString("dd MMMM yyyy")</p>
+                        <p><strong>Hari:</strong> @DateTime.Now.ToString("dddd")</p>
+                        <hr style="margin: 12px 0;">
+                        <small>
+                            Pastikan untuk input presensi setiap selesai mengajar.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

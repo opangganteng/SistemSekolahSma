@@ -1,0 +1,162 @@
+﻿@model SistemSekolahSMA.Models.PresensiGuru
+@{
+    ViewData["Title"] = "Presensi Guru";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4><i class="fas fa-user-check"></i> Input Presensi Guru</h4>
+                    <p class="mb-0">Input kehadiran dan materi pembelajaran hari ini</p>
+                </div>
+
+                <div class="card-body">
+                    <form asp-action="SimpanPresensiGuru" method="post">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <!-- Jadwal Mengajar -->
+                                <div class="form-group mb-3">
+                                    <label asp-for="JadwalId" class="control-label">
+                                        <i class="fas fa-calendar-alt"></i> Jadwal Mengajar
+                                    </label>
+                                    <select asp-for="JadwalId" class="form-select" asp-items="ViewBag.JadwalOptions">
+                                        <!-- Hapus option manual ini karena sudah ada di ViewBag.JadwalOptions -->
+                                    </select>
+                                    <span asp-validation-for="JadwalId" class="text-danger"></span>
+                                    @if (ViewBag.JadwalOptions == null || !((List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.JadwalOptions).Any())
+                                    {
+                                        <small class="text-warning">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            Tidak ada jadwal mengajar ditemukan. Hubungi admin untuk menambah jadwal.
+                                        </small>
+                                    }
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <!-- Tanggal -->
+                                        <div class="form-group mb-3">
+                                            <label asp-for="TanggalPresensi" class="control-label">
+                                                <i class="fas fa-calendar"></i> Tanggal Presensi
+                                            </label>
+                                            <input asp-for="TanggalPresensi" class="form-control" type="date" />
+                                            <span asp-validation-for="TanggalPresensi" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <!-- Status Kehadiran -->
+                                        <div class="form-group mb-3">
+                                            <label asp-for="StatusKehadiran" class="control-label">
+                                                <i class="fas fa-check-circle"></i> Status Kehadiran
+                                            </label>
+                                            <select asp-for="StatusKehadiran" class="form-select">
+                                                <option value="">-- Pilih Status --</option>
+                                                <option value="Hadir">✅ Hadir</option>
+                                                <option value="Izin">📝 Izin</option>
+                                            </select>
+                                            <span asp-validation-for="StatusKehadiran" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Materi Pelajaran -->
+                                <div class="form-group mb-3">
+                                    <label asp-for="MateriPelajaran" class="control-label">
+                                        <i class="fas fa-book-open"></i> Materi Pelajaran
+                                    </label>
+                                    <textarea asp-for="MateriPelajaran" class="form-control" rows="4"
+                                              placeholder="Jelaskan materi yang diajarkan hari ini..."></textarea>
+                                    <span asp-validation-for="MateriPelajaran" class="text-danger"></span>
+                                </div>
+
+                                <!-- Keterangan -->
+                                <div class="form-group mb-3">
+                                    <label asp-for="Keterangan" class="control-label">
+                                        <i class="fas fa-sticky-note"></i> Keterangan
+                                    </label>
+                                    <textarea asp-for="Keterangan" class="form-control" rows="2"
+                                              placeholder="Keterangan tambahan (opsional)..."></textarea>
+                                    <span asp-validation-for="Keterangan" class="text-danger"></span>
+                                </div>
+
+                                <!-- Buttons -->
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-success btn-lg">
+                                        <i class="fas fa-save"></i> Simpan Presensi
+                                    </button>
+                                    <a asp-action="Index" class="btn btn-secondary btn-lg">
+                                        <i class="fas fa-arrow-left"></i> Kembali
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <!-- Petunjuk -->
+                                <div class="card border-info">
+                                    <div class="card-header bg-info text-white">
+                                        <h6 class="mb-0"><i class="fas fa-lightbulb"></i> Petunjuk</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <ol class="mb-0">
+                                            <li>Pilih jadwal mengajar</li>
+                                            <li>Tentukan tanggal presensi</li>
+                                            <li>Pilih status kehadiran</li>
+                                            <li>Isi materi yang diajarkan</li>
+                                            <li>Tambahkan keterangan jika perlu</li>
+                                            <li>Klik "Simpan Presensi"</li>
+                                        </ol>
+                                    </div>
+                                </div>
+
+                                <!-- Debug Info -->
+                                <div class="card border-warning mt-3">
+                                    <div class="card-header bg-warning text-dark">
+                                        <h6 class="mb-0"><i class="fas fa-bug"></i> Debug Info</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <small>
+                                            <strong>Total Jadwal:</strong>
+                                            @(ViewBag.JadwalOptions != null ? ((List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.JadwalOptions).Count : 0)
+                                            <br>
+                                            <strong>Guru ID:</strong> @(ViewBag.GuruId ?? "N/A")
+                                            <br>
+                                            <strong>User ID:</strong> @(User.FindFirst("UserId")?.Value ?? "N/A")
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Debug jadwal options
+        console.log('=== DEBUG JADWAL OPTIONS ===');
+        @if (ViewBag.JadwalOptions != null)
+        {
+                var jadwalOptions = (List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.JadwalOptions;
+                <text>
+                console.log('Total jadwal options: @jadwalOptions.Count');
+                @foreach (var option in jadwalOptions)
+                {
+                        <text>console.log('Jadwal: @option.Value - @option.Text');</text>
+                }
+                </text>
+        }
+        else
+        {
+                <text>console.log('ViewBag.JadwalOptions is null!');</text>
+        }
+    </script>
+}

@@ -1,0 +1,125 @@
+﻿@model SistemSekolahSMA.Models.Guru
+@{
+    ViewData["Title"] = "Profil Guru";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-user"></i> Profil Guru</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label"><strong>NIP:</strong></label>
+                                <p class="form-control-plaintext">@Model.NIP</p>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Nama Lengkap:</strong></label>
+                                <p class="form-control-plaintext">@Model.NamaGuru</p>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Tempat Lahir:</strong></label>
+                                <p class="form-control-plaintext">@(Model.TempatLahir ?? "-")</p>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Tanggal Lahir:</strong></label>
+                                <p class="form-control-plaintext">
+                                    @(Model.TanggalLahir?.ToString("dd MMMM yyyy") ?? "-")
+                                </p>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Jenis Kelamin:</strong></label>
+                                <p class="form-control-plaintext">@(Model.JenisKelamin ?? "-")</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Alamat:</strong></label>
+                                <p class="form-control-plaintext">@(Model.Alamat ?? "-")</p>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label"><strong>No. Telepon:</strong></label>
+                                <p class="form-control-plaintext">@(Model.NoTelepon ?? "-")</p>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Status:</strong></label>
+                                <p class="form-control-plaintext">
+                                    @if (Model.IsActive)
+                                    {
+                                        <span class="badge bg-success">Aktif</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Tidak Aktif</span>
+                                    }
+                                </p>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Bergabung Sejak:</strong></label>
+                                <p class="form-control-plaintext">@Model.CreatedDate.ToString("dd MMMM yyyy")</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="EditProfile" class="btn btn-warning">
+                            <i class="fas fa-edit"></i> Edit Profil
+                        </a>
+                        <a asp-action="ChangePassword" class="btn btn-secondary">
+                            <i class="fas fa-key"></i> Ubah Password
+                        </a>
+                        <a asp-action="Index" class="btn btn-primary">
+                            <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-info-circle"></i> Informasi</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>Tips:</strong><br>
+                        • Pastikan data profil selalu update<br>
+                        • Hubungi admin jika ada kesalahan data<br>
+                        • Ubah password secara berkala
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5><i class="fas fa-chart-bar"></i> Statistik</h5>
+                </div>
+                <div class="card-body">
+                    <p>
+                        <strong>Profile terakhir diupdate:</strong><br>
+                        <small class="text-muted">@Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")</small>
+                    </p>
+
+                    <p>
+                        <strong>Status Akun:</strong><br>
+                        <span class="badge bg-success">Verified</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
