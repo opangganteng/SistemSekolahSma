@@ -17,7 +17,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IGuruRepository, GuruRepository>();
 builder.Services.AddScoped<IKelasRepository, KelasRepository>();
 builder.Services.AddScoped<IMataPelajaranRepository, MataPelajaranRepository>();
-builder.Services.AddScoped<SiswaRepository, SiswaRepository>();
+builder.Services.AddScoped<ISiswaRepository, SiswaRepository>();  // Interface -> Implementation
+builder.Services.AddScoped<SiswaRepository>();  // TAMBAHKAN INI: Concrete class registration
 builder.Services.AddScoped<IJadwalRepository, JadwalRepository>();
 builder.Services.AddScoped<IPresensiSiswaRepository, PresensiSiswaRepository>();
 builder.Services.AddScoped<IPresensiGuruRepository, PresensiGuruRepository>();
@@ -58,9 +59,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 

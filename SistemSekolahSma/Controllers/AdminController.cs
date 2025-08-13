@@ -485,6 +485,7 @@ namespace SistemSekolahSMA.Controllers
                 {
                     return NotFound();
                 }
+
                 await LoadKelasOptions();
                 return View(siswa);
             }
@@ -496,8 +497,18 @@ namespace SistemSekolahSMA.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditSiswa(Models.Siswa model)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditSiswa(Siswa model)
         {
+            // Pastikan ID siswa ada
+            if (model.SiswaId <= 0)
+            {
+                TempData["Error"] = "ID siswa tidak valid.";
+                return RedirectToAction("MasterSiswa");
+            }
+
+            // Hilangkan validasi untuk properti navigasi
             if (ModelState.ContainsKey("Kelas"))
             {
                 ModelState.Remove("Kelas");
@@ -514,11 +525,11 @@ namespace SistemSekolahSMA.Controllers
                 var result = await _siswaService.UpdateSiswaAsync(model);
                 if (result)
                 {
-                    TempData["Success"] = "Siswa berhasil diupdate";
+                    TempData["Success"] = "Data siswa berhasil diperbarui.";
                     return RedirectToAction("MasterSiswa");
                 }
 
-                ModelState.AddModelError("", "Gagal mengupdate siswa");
+                ModelState.AddModelError("", "Gagal mengupdate data siswa.");
             }
             catch (Exception ex)
             {
@@ -1096,19 +1107,8 @@ namespace SistemSekolahSMA.Controllers
 
         private async Task LoadKelasOptions()
         {
-            try
-            {
-                var kelas = await _kelasService.GetAllKelasAsync();
-                ViewBag.Kelas = kelas.Select(k => new SelectListItem
-                {
-                    Value = k.KelasId.ToString(),
-                    Text = k.NamaKelas
-                }).ToList();
-            }
-            catch
-            {
-                ViewBag.Kelas = new List<SelectListItem>();
-            }
+            var kelasList = await _kelasService.GetAllKelasAsync();
+            ViewBag.Kelas = kelasList;
         }
 
         private async Task LoadGuruOptions()
@@ -1132,18 +1132,33 @@ namespace SistemSekolahSMA.Controllers
         {
             try
             {
-                await LoadKelasOptions();
-                await LoadGuruOptions();
+                // Load Kelas - langsung sebagai collection, bukan SelectList
+                var kelasList = await _kelasService.GetAllKelasAsync();
+                ViewBag.Kelas = kelasList?.Where(k => k.IsActive == true).ToList() ?? new List<SistemSekolahSMA.Models.Kelas>();
 
+                // Load Guru - sebagai SelectList
+                var gurus = await _guruService.GetAllGuruAsync();
+                ViewBag.Gurus = gurus?.Where(g => g.IsActive == true)
+                    .Select(g => new SelectListItem
+                    {
+                        Value = g.GuruId.ToString(),
+                        Text = g.NamaGuru
+                    }).ToList() ?? new List<SelectListItem>();
+
+                // Load Mata Pelajaran - sebagai SelectList
                 var mataPelajarans = await _mataPelajaranService.GetAllMataPelajaranAsync();
-                ViewBag.MataPelajaran = mataPelajarans.Select(mp => new SelectListItem
-                {
-                    Value = mp.MataPelajaranId.ToString(),
-                    Text = mp.NamaMapel
-                }).ToList();
+                ViewBag.MataPelajaran = mataPelajarans?.Where(mp => mp.IsActive == true)
+                    .Select(mp => new SelectListItem
+                    {
+                        Value = mp.MataPelajaranId.ToString(),
+                        Text = mp.NamaMapel
+                    }).ToList() ?? new List<SelectListItem>();
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"LoadJadwalOptions error: {ex.Message}");
+                ViewBag.Kelas = new List<SistemSekolahSMA.Models.Kelas>();
+                ViewBag.Gurus = new List<SelectListItem>();
                 ViewBag.MataPelajaran = new List<SelectListItem>();
             }
         }

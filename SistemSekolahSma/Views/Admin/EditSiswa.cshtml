@@ -4,7 +4,6 @@
     ViewData["Title"] = "Edit Siswa";
 }
 
-
 <h2>✏️ Edit Siswa</h2>
 
 <div class="row">
@@ -12,6 +11,9 @@
         <div class="card">
             <div class="card-body">
                 <form asp-action="EditSiswa" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <!-- Hidden field untuk ID dan CreatedDate -->
                     <input type="hidden" asp-for="SiswaId" />
                     <input type="hidden" asp-for="CreatedDate" />
 
@@ -36,7 +38,7 @@
 
                     <div class="form-group mb-3">
                         <label asp-for="KelasId" class="control-label">Kelas *</label>
-                        <select asp-for="KelasId" class="form-select" asp-items="@(new SelectList(ViewBag.Kelas, "KelasId", "NamaKelas"))">
+                        <select asp-for="KelasId" class="form-select" asp-items="@(new SelectList(ViewBag.Kelas, "KelasId", "NamaKelas", Model.KelasId))">
                             <option value="">-- Pilih Kelas --</option>
                         </select>
                         <span asp-validation-for="KelasId" class="text-danger"></span>
@@ -63,8 +65,8 @@
                         <label asp-for="JenisKelamin" class="control-label">Jenis Kelamin</label>
                         <select asp-for="JenisKelamin" class="form-select">
                             <option value="">-- Pilih Jenis Kelamin --</option>
-                            <option value="Laki-laki">Laki-laki</option>
-                            <option value="Perempuan">Perempuan</option>
+                            <option value="Laki-laki" selected="@("Laki-laki" == Model.JenisKelamin)">Laki-laki</option>
+                            <option value="Perempuan" selected="@("Perempuan" == Model.JenisKelamin)">Perempuan</option>
                         </select>
                         <span asp-validation-for="JenisKelamin" class="text-danger"></span>
                     </div>

@@ -1,6 +1,9 @@
 ﻿@model SistemSekolahSMA.Models.Siswa
 @{
     ViewData["Title"] = "Tambah Siswa";
+
+    // PERBAIKAN: Convert ViewBag.Kelas ke SelectList yang benar
+    var kelasList = ViewBag.Kelas as IEnumerable<SistemSekolahSMA.Models.Kelas> ?? new List<SistemSekolahSMA.Models.Kelas>();
 }
 
 <div class="container-fluid">
@@ -12,6 +15,8 @@
                 </div>
                 <div class="card-body">
                     <form asp-action="TambahSiswa" method="post">
+                        @Html.AntiForgeryToken()
+
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                         <div class="row">
@@ -30,8 +35,12 @@
 
                                 <div class="mb-3">
                                     <label asp-for="KelasId" class="form-label">Kelas *</label>
-                                    <select asp-for="KelasId" asp-items="ViewBag.Kelas" class="form-select">
+                                    <select asp-for="KelasId" class="form-select">
                                         <option value="">-- Pilih Kelas --</option>
+                                        @foreach (var kelas in kelasList)
+                                        {
+                                            <option value="@kelas.KelasId">@kelas.NamaKelas</option>
+                                        }
                                     </select>
                                     <span asp-validation-for="KelasId" class="text-danger"></span>
                                 </div>

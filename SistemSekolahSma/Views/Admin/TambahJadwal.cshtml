@@ -1,6 +1,11 @@
 ﻿@model SistemSekolahSMA.Models.Jadwal
 @{
     ViewData["Title"] = "Tambah Jadwal";
+
+    // PERBAIKAN: Convert ViewBag ke collection yang benar
+    var kelasList = ViewBag.Kelas as IEnumerable<SistemSekolahSMA.Models.Kelas> ?? new List<SistemSekolahSMA.Models.Kelas>();
+    var mataPelajaranList = ViewBag.MataPelajaran as IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>();
+    var guruList = ViewBag.Gurus as IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>();
 }
 
 <div class="container-fluid">
@@ -12,6 +17,8 @@
                 </div>
                 <div class="card-body">
                     <form asp-action="TambahJadwal" method="post">
+                        @Html.AntiForgeryToken()
+
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                         <div class="row">
@@ -20,12 +27,9 @@
                                     <label asp-for="KelasId" class="form-label">Kelas</label>
                                     <select asp-for="KelasId" class="form-select">
                                         <option value="">-- Pilih Kelas --</option>
-                                        @if (ViewBag.Kelas != null)
+                                        @foreach (var kelas in kelasList)
                                         {
-                                            @foreach (var kelas in ViewBag.Kelas)
-                                            {
-                                                <option value="@kelas.Value">@kelas.Text</option>
-                                            }
+                                            <option value="@kelas.KelasId">@kelas.NamaKelas</option>
                                         }
                                     </select>
                                     <span asp-validation-for="KelasId" class="text-danger"></span>
@@ -35,12 +39,9 @@
                                     <label asp-for="MataPelajaranId" class="form-label">Mata Pelajaran</label>
                                     <select asp-for="MataPelajaranId" class="form-select">
                                         <option value="">-- Pilih Mata Pelajaran --</option>
-                                        @if (ViewBag.MataPelajaran != null)
+                                        @foreach (var mapel in mataPelajaranList)
                                         {
-                                            @foreach (var mapel in ViewBag.MataPelajaran)
-                                            {
-                                                <option value="@mapel.Value">@mapel.Text</option>
-                                            }
+                                            <option value="@mapel.Value">@mapel.Text</option>
                                         }
                                     </select>
                                     <span asp-validation-for="MataPelajaranId" class="text-danger"></span>
@@ -50,12 +51,9 @@
                                     <label asp-for="GuruId" class="form-label">Guru</label>
                                     <select asp-for="GuruId" class="form-select">
                                         <option value="">-- Pilih Guru --</option>
-                                        @if (ViewBag.Gurus != null)
+                                        @foreach (var guru in guruList)
                                         {
-                                            @foreach (var guru in ViewBag.Gurus)
-                                            {
-                                                <option value="@guru.Value">@guru.Text</option>
-                                            }
+                                            <option value="@guru.Value">@guru.Text</option>
                                         }
                                     </select>
                                     <span asp-validation-for="GuruId" class="text-danger"></span>
